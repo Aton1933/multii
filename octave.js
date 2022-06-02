@@ -1531,7 +1531,7 @@ id: 'menu'
 }
 }]
 let txt = `「 Broadcast Bot 」\n\n${text}`
-client.send5ButImg(i, txt, client.user.name, global.thumb, btn)
+client.sendButImg(i, txt, client.user.name, global.thumb, btn)
 }
 m.reply(`Sukses Mengirim Broadcast Ke ${anu.length} Group`)
 }
@@ -1570,7 +1570,7 @@ id: 'menu'
 }
 }]
 let txt = `「 Broadcast Bot 」\n\n${text}`
-client.send5ButImg(yoi, txt, client.user.name, global.thumb, btn)
+client.sendButImg(yoi, txt, client.user.name, global.thumb, btn)
 }
 m.reply('Sukses Broadcast')
 }
@@ -3586,7 +3586,7 @@ displayText: '💸 Sewa Bot 💸',
 id: 'sewabot'
 }
 }]
-client.send5ButImg(m.chat, anu, client.user.name, global.thumb, btn)
+client.sendButImg(m.chat, anu, client.user.name, global.thumb, btn)
 }
 break
 case 'allmenu': {
@@ -3880,7 +3880,7 @@ displayText: 'Script',
 id: 'sc'
 }
 }]
-client.send5ButImg(m.chat, anu, client.user.name, global.thumb, btn)
+client.sendButImg(m.chat, anu, client.user.name, global.thumb, btn)
 }
 break
 case 'gamemenu': {
@@ -3938,7 +3938,7 @@ displayText: 'Script',
 id: 'sc'
 }
 }]
-client.send5ButImg(m.chat, anu, client.user.name, global.thumb, btn)
+client.sendButImg(m.chat, anu, client.user.name, global.thumb, btn)
 }
 break
 default:
