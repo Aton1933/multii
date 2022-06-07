@@ -21,19 +21,17 @@ const { Primbon } = require('scrape-primbon')
 const primbon = new Primbon()
 const imgbb = require('imgbb-uploader')
 const xfarr = require('xfarr-api')
+const bochil = require('@bochilteam/scraper')
 const lirik = require('lyrics-parse')
 const similarity = require('similarity')
 const { smsg, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, format, parseMention, getRandom } = require('./lib/myfunc')
 const { linkwa } = require("./lib/linkwa");
 const { Gempa, Cuaca } = require("./lib/bmkg");
 const { textpro, textpro2, ephoto } = require("./lib/textpro");
-const { tiktok } = require("./lib/tiktok");
 const { Instagram } = require('./lib/instagram')
 const { mediafireDl } = require ('./lib/mediafire');
 const { terjemah } = require ('./lib/translate');
 const { download } = require ('./lib/twitter')
-const { Tiktok } = require("./lib/tiktod")
-const tt = new Tiktok()
 const { _tebaktebakan, _susunkata, _asahotak, _kimia, _bendera, _lagukebangsaan, _ibukota, _siapaaku } = require('./lib/game')
 const { truth, dare, quotesislami, quoteskehidupan, quotesnasehat, quotesmotivasi } = require('./lib/random')
 const { listsurah, codebahasa, rules } = require('./lib/listcode')
@@ -137,7 +135,7 @@ console.error(err)
 
 // Public & Self
 if (!client.public) {
-if (!m.key.fromMe) return
+if (!m.key.fromMe || !isCreator) return
 }
 
 // Push Message To Console && Auto Read
@@ -1209,7 +1207,7 @@ teks += `⭔ @${mem.id.split('@')[0]}\n`
 client.sendMessage(m.chat, { text: teks, mentions: participants.map(a => a.id) }, { quoted: m })
 }
 break
-case 'hidetag': {
+case 'hidetag': case 'ht': {
 if (!m.isGroup) throw mess.group
 if (!isBotAdmins) throw mess.botAdmin
 if (!isAdmins) throw mess.admin
@@ -1683,6 +1681,22 @@ if (!/webp/.test(mime)) throw `balas stiker dengan caption *${prefix + command}*
 let delrep = await m.reply(mess.wait)
 let media = await client.downloadAndSaveMediaMessage(quoted)
 let ran = await getRandom('.png')
+exec(`ffmpeg -i ${media} ${ran}`, (err) => {
+fs.unlinkSync(media)
+if (err) throw err
+let buffer = fs.readFileSync(ran)
+client.sendMessage(m.chat, { image: buffer }, { quoted: m })
+fs.unlinkSync(ran)
+})
+await sleep(2000)
+client.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: true, id: delrep.key.id, participant: delrep.key.remoteJid } })
+}
+break
+case 'tojpg': {
+if (!/image/.test(mime)) throw `balas atau kirim foto dengan caption *${prefix + command}*`
+let delrep = await m.reply(mess.wait)
+let media = await client.downloadAndSaveMediaMessage(quoted)
+let ran = await getRandom('.jpg')
 exec(`ffmpeg -i ${media} ${ran}`, (err) => {
 fs.unlinkSync(media)
 if (err) throw err
@@ -2902,8 +2916,8 @@ case 'tik': case 'tiktok': case 'tiktoknowm': case 'tiktokdl': case 'ttdl': case
 if (!text) throw `Usage: *${prefix + command} Tiktok url*`
 if (!isUrl(args[0]) && !args[0].includes('tiktok')) throw 'URL TIDAK VALID'
 let delrep = await m.reply(mess.wait)
-tikt = await tiktok(args[0]);
-client.sendMessage(m.chat, { video: { url: tikt.result.nowatermark } }, { quoted: m })
+tikt = await bochil.tiktokdl(args[0]);
+client.sendMessage(m.chat, { video: { url: tikt.video.no_watermark } }, { quoted: m })
 await sleep(2000)
 client.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: true, id: delrep.key.id, participant: delrep.key.remoteJid } })
 }
@@ -2952,6 +2966,7 @@ case 'ig': case 'instagram': {
 if (!text) throw `Usage: *${prefix + command} instagram url*`
 if (/(?:\/p\/|\/reel\/)([^\s&]+)/.test(isUrl(text)[0])) {
 let delrep = await m.reply(mess.wait)
+try{
 let igeh = new Instagram()
 let anu = await igeh.download(text)
 if (anu.status == false) throw 'Invalid link or private post'
@@ -2974,6 +2989,17 @@ if (anu.media_count == 1) {
 }
 await sleep(2000)
 client.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: true, id: delrep.key.id, participant: delrep.key.remoteJid } })
+} catch {
+  let anu = await fetchJson(api('zekais', '/igdl2', {url: text}, 'apikey'))
+  for (let res of anu.result) {
+    await sleep(1000)
+    if (res.type == "image") {
+      client.sendMessage(m.chat, {image: {url: res.url}}, {quoted: m})
+    } else {
+      client.sendMessage(m.chat, {video: {url: res.url}}, {quoted: m})
+    }
+  }
+}
 } else {
   m.reply('Only support IG Posts and Reels')
 }
@@ -2983,11 +3009,15 @@ case 'igtv': {
 if (!text) throw `Usage: *${prefix + command} instagram url*`
 if (/(?:\/tv\/)([^\s&]+)/.test(isUrl(text)[0])) {
 let delrep = await m.reply(mess.wait)
+try{
 let igeh = new Instagram()
 let anu = await igeh.tv(text)
 client.sendMessage(m.chat, {video: {url: anu.url}, caption: `*Result*:\n\n⭔ *Username*: ${anu.username}\n⭔ *Full Name*: ${anu.full_name}\n⭔ *Like Count*: ${anu.likes}\n⭔ *Comment Count*: ${anu.comments}\n⭔ *Verified*: ${anu.verified}\n⭔ *View*: ${anu.viewers}\n⭔ *Caption*: ${anu.caption}`}, {quoted: m})
 await sleep(2000)
 client.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: true, id: delrep.key.id, participant: delrep.key.remoteJid } })
+} catch {
+  m.reply('ERROR!')
+}
 } else {
   m.reply('Only supports IGTV')
 }
@@ -2997,6 +3027,7 @@ case 'igstory': {
 if (!text) throw `Usage: *${prefix + command} Username*`
 if (isUrl(text)) throw 'Username goblog bukan link'
 let delrep = await m.reply(mess.wait)
+try{
 let igeh = new Instagram()
 let anu = await igeh.story(text)
 for (let res of anu) {
@@ -3009,6 +3040,9 @@ for (let res of anu) {
 }
 await sleep(2000)
 client.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: true, id: delrep.key.id, participant: delrep.key.remoteJid } })
+} catch {
+  m.reply('ERROR!')
+}
 }
 break
 case 'twit': case 'twitdl': case 'twitter': {
@@ -3643,6 +3677,7 @@ Search:
 
 Convert:
 📌 ${prefix}toimage
+📌 ${prefix}tojpg
 📌 ${prefix}sticker
 📌 ${prefix}tovideo
 📌 ${prefix}togif
@@ -3866,7 +3901,7 @@ phoneNumber: global.phone
 }
 }, {
 quickReplyButton: {
-displayText: 'Status Bot',
+displayText: '🛰️Status Bot🛰️',
 id: 'ping'
 }
 }, {
@@ -3876,7 +3911,7 @@ id: `${prefix}sewabot`
 }  
 }, {
 quickReplyButton: {
-displayText: 'Script',
+displayText: '🔗Script🔗',
 id: 'sc'
 }
 }]
@@ -3924,7 +3959,7 @@ phoneNumber: global.phone
 }
 }, {
 quickReplyButton: {
-displayText: 'Status Bot',
+displayText: '🛰️Status Bot🛰️',
 id: 'ping'
 }
 }, {
@@ -3934,7 +3969,7 @@ id: `${prefix}sewabot`
 }  
 }, {
 quickReplyButton: {
-displayText: 'Script',
+displayText: '🔗Script🔗',
 id: 'sc'
 }
 }]
@@ -3978,9 +4013,9 @@ if (budy.includes('tiktok.com/')) {
 let anu = await findUrl(budy)
 anu.forEach(async(taut, i) => {
 setTimeout(async() => {
-tikt = await tiktok(taut);
-if (tikt.result.nowatermark == undefined) return
-client.sendMessage(m.chat, {video: {url: tikt.result.nowatermark}}, {quoted: m})
+tikt = await bochil.tiktokdl(taut);
+if (tikt.video.no_watermark == undefined) return
+client.sendMessage(m.chat, {video: {url: tikt.video.no_watermark}}, {quoted: m})
 }, 3000 * i)
 })   
 }
