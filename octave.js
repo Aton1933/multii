@@ -5,7 +5,7 @@
 */
 
 require('./config')
-const { BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent, generateWAMessage, prepareWAMessageMedia, areJidsSameUser, getContentType } = require('@adiwajshing/baileys')
+const { useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto, BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessage, areJidsSameUser, getContentType } = require('@adiwajshing/baileys')
 const fs = require('fs')
 const util = require('util')
 const chalk = require('chalk')
@@ -140,7 +140,6 @@ if (!m.key.fromMe || !isCreator) return
 
 // Push Message To Console && Auto Read
 if (m.message) {
-client.sendReadReceipt(m.chat, m.sender, [m.key.id])
 console.log(chalk.black(chalk.bgWhite('[ PESAN ]')), chalk.black(chalk.bgGreen(new Date)), chalk.black(chalk.bgBlue(budy || m.mtype)) + '\n' + chalk.magenta('=> Dari'), chalk.green(pushname), chalk.yellow(m.sender) + '\n' + chalk.blueBright('=> Di'), chalk.green(m.isGroup ? pushname : 'Private Chat', m.chat))
 }
 
@@ -157,14 +156,14 @@ timezone: "Asia/Jakarta"
 })
 
 // auto set bio
-if (db.data.settings[botNumber].autobio) {
+/*if (db.data.settings[botNumber].autobio) {
 let setting = global.db.data.settings[botNumber]
 if (new Date() * 1 - setting.status > 1000) {
 let uptime = await runtime(process.uptime())
 await client.setStatus(`${global.botname} | Runtime : ${runtime(process.uptime())}`)
 setting.status = new Date() * 1
 }
-}
+}*/
 
 // Anti Link
 if (db.data.chats[m.chat].antilink) {
