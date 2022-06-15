@@ -24,9 +24,9 @@ global.APIKeys = {
 }
 
 // Other
-global.owner = ['6285171591882','6285706174510','6285733532557']
+global.owner = ['6285706174510']
 global.premium = ['6285706174510']
-global.phone = '6285171591882'
+global.phone = '6285706174510'
 global.owners  = '6285706174510'
 global.acara = 'Tahun Baru 2023'
 global.tanggal = '1,1,2023'
