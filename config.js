@@ -1,6 +1,6 @@
 /**
    * Create By Dika Ardnt.
-   * Contact Me on wa.me/6288292024190
+   * Contact Me on wa.me/6283115092814
    * Follow https://github.com/DikaArdnt
 */
 
@@ -24,10 +24,10 @@ global.APIKeys = {
 }
 
 // Other
-global.owner = ['6285706174510']
-global.premium = ['6285706174510']
-global.phone = '6285706174510'
-global.owners  = '6285706174510'
+global.owner = ['6283115092814']
+global.premium = ['6283115092814']
+global.phone = '6283115092814'
+global.owners  = '6283115092814'
 global.acara = 'Tahun Baru 2023'
 global.tanggal = '1,1,2023'
 global.botname = 'OCTV-TECH.ID'
